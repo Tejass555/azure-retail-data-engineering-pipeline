@@ -1,0 +1,25 @@
+{
+	"name": "trg_daily_retail_pipeline",
+	"properties": {
+		"description": "Runs the retail data ingestion and transformation workflow daily at 2:00 AM IST",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "orchestration_pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 20,
+				"startTime": "2026-11-04T11:45:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

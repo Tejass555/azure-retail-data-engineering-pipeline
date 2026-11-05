@@ -1,0 +1,113 @@
+{
+	"name": "retail_master_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Run_Bronze_Ingestion",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/project1/01_Bronze_Ingestion"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksLS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Run_Silver_Cleansing",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Run_Bronze_Ingestion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/project1/02_Silver_Data_Cleansing"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksLS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Run_Gold_Aggregations",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Run_Silver_Cleansing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/project1/03_Gold_Business_Aggregations"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksLS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Fail_Pipeline",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "Run_Bronze_Ingestion",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Run_Silver_Cleansing",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Run_Gold_Aggregations",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "Retail master pipeline failed. Check the failed activity details.",
+					"errorCode": "RETAIL_PIPELINE_FAILED"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-11-05T07:31:39Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

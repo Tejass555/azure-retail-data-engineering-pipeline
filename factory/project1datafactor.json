@@ -1,0 +1,15 @@
+{
+	"name": "project1datafactor",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "22b13391-602e-4aa9-a819-0c79416eaba7",
+		"tenantId": "b9e04ddf-2ae0-4686-a9b2-cbf97eae0c27"
+	}
+}
